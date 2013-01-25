@@ -1,0 +1,1 @@
+{"name":"famelo\/impersonate","type":"typo3-flow-package","description":"","require":{"typo3\/flow":"*"},"autoload":{"psr-0":{"Famelo\\Impersonate":"Classes"}}}

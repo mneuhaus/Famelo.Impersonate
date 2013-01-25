@@ -1,0 +1,19 @@
+<f:layout name="Default" />
+
+<f:section name="Title"></f:section>
+
+<f:section name="Content">
+	Current impersonation: {impersonate.accountIdentifier} <br />
+	Original Identity: {originalIdentity.accountIdentifier}<br />
+	<f:link.action action="reset">Return to original User</f:link.action>
+	<table>
+	<f:for each="{accounts}" as="account">
+		<tr>
+			<td>{account.accountIdentifier}</td>
+			<td>
+				<f:link.action action="impersonate" arguments="{account: account}">su</f:link.action>
+			</td>
+		</tr>
+	</f:for>
+	</table>
+</f:section>
