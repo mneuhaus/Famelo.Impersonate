@@ -37,11 +37,28 @@ class ImpersonateService {
 	protected $persistenceManager;
 
 	/**
+	 * @Flow\Inject
+	 * @var \TYPO3\Flow\Session\SessionManager
+	 */
+	protected $sessionManager;
+
+	/**
 	 * @param \TYPO3\Flow\Security\Account $account
 	 * @return void
 	 */
 	public function impersonate($account) {
 		$this->session->putData('OriginalIdentity', $this->persistenceManager->getIdentifierByObject($this->securityContext->getAccount()));
+//		$this->session->putData('FooBar', 'TEST');
+
+		$originalSessionIdentifier = $this->session->getId();
+
+		// Close current Session
+//		$this->session->close();
+
+		// Create a fresh Session
+//		$this->session->start();
+
+		$this->session->putData('Famelo.Impersonate.OriginalSessionIdentifier', $originalSessionIdentifier);
 
 		$tokens = $this->securityContext->getAuthenticationTokens();
 		foreach ($tokens as $token) {
