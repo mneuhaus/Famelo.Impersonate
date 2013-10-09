@@ -3,13 +3,31 @@
 <f:section name="Title"></f:section>
 
 <f:section name="Content">
-	Current impersonation: {impersonate.accountIdentifier} <br />
-	Original Identity: {originalIdentity.accountIdentifier}<br />
-	<f:link.action action="reset">Return to original User</f:link.action>
-	<table>
+	<dl class="dl-horizontal">
+		<dt>Original Identity:</dt>
+		<dd>{originalIdentity.accountIdentifier}</dd>
+		<f:if condition="{impersonate.accountIdentifier}">
+			<dt>Current impersonation:</dt>
+			<dd>{impersonate.accountIdentifier}</dd>
+
+			<dt>&nbsp;</dt>
+			<dd>
+				<f:link.action action="reset">Return to original User</f:link.action>
+			</dd>
+		</f:if>
+	</dl>
+
+	<table class="table table-bordered table-striped">
 	<f:for each="{accounts}" as="account">
 		<tr>
-			<td>{account.accountIdentifier}</td>
+			<td>
+				{account.accountIdentifier}
+			</td>
+			<td>
+				<f:if condition="{impersonate.accountIdentifier} == {account.accountIdentifier}">
+				foo
+				</f:if>
+			</td>
 			<td>
 				<f:link.action action="impersonate" arguments="{account: account}">su</f:link.action>
 			</td>

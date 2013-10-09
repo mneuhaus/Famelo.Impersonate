@@ -31,10 +31,16 @@ class ImpersonateService {
 	protected $session;
 
 	/**
-	 * @Flow\Inject
 	 * @var \TYPO3\Flow\Persistence\PersistenceManagerInterface
+	 * @Flow\Inject
 	 */
 	protected $persistenceManager;
+
+	/**
+	 * @var \TYPO3\Flow\Security\Policy\PolicyService
+	 * @Flow\Inject
+	 */
+	protected $policyService;
 
 	/**
 	 * @param \TYPO3\Flow\Security\Account $account
@@ -52,14 +58,37 @@ class ImpersonateService {
 	}
 
 	public function undoImpersonate() {
-		$this->session->putData('Impersonate', $this->session->getData('OriginalIdentity'));
+		$this->session->putData('Impersonate', NULL);
 	}
 
 	public function getImpersonation() {
-		if ($this->session->hasKey('Impersonate')) {
+		if ($this->session->getData('Impersonate') !== NULL) {
 			return $this->persistenceManager->getObjectByIdentifier($this->session->getData('Impersonate'), '\TYPO3\Flow\Security\Account');
 		}
 		return NULL;
+	}
+
+	public function getCurrentUser() {
+		return $this->securityContext->getAccount();
+	}
+
+	public function getOriginalIdentity() {
+		if ($this->session->getData('OriginalIdentity') !== NULL) {
+			return $this->persistenceManager->getObjectByIdentifier($this->session->getData('OriginalIdentity'), '\TYPO3\Flow\Security\Account');
+		}
+		return $this->securityContext->getAccount();
+	}
+
+	public function getOriginalIdentityRoles() {
+		$roles = $this->getOriginalIdentity()->getRoles();
+		foreach ($roles as $role) {
+			foreach ($this->policyService->getAllParentRoles($role) as $parentRole) {
+				if (!in_array($parentRole, $roles)) {
+					$roles[$parentRole->getIdentifier()] = $parentRole;
+				}
+			}
+		}
+		return $roles;
 	}
 }
 ?>
